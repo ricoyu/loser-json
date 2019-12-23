@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import com.loserico.json.jackson.serializer.LocalDateDeserializer;
-import com.loserico.json.jackson.serializer.LocalDateTimeDeserializer;
+import com.loserico.json.jackson.deserializer.LocalDateDeserializer;
+import com.loserico.json.jackson.deserializer.LocalDateTimeDeserializer;
 import com.loserico.json.jackson.serializer.LocalDateTimeSerializer;
 import org.springframework.beans.factory.FactoryBean;
 

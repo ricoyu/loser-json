@@ -1,7 +1,7 @@
 package com.loserico.json.resource;
 
 import com.google.common.collect.Sets;
-import com.loserico.json.utils.DateUtils;
+import com.loserico.common.lang.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

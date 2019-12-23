@@ -1,11 +1,10 @@
-package com.loserico.json.jackson.serializer;
+package com.loserico.json.jackson.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.JSR310DateTimeDeserializerBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,9 +60,14 @@ public class LocalDateTimeDeserializer
 	public LocalDateTimeDeserializer(DateTimeFormatter formatter) {
 		super(LocalDateTime.class, formatter);
 	}
-
+	
 	@Override
-	protected JsonDeserializer<LocalDateTime> withDateFormat(DateTimeFormatter formatter) {
+	protected JSR310DateTimeDeserializerBase<LocalDateTime> withLeniency(Boolean leniency) {
+		return null; //TODO
+	}
+	
+	@Override
+	protected JSR310DateTimeDeserializerBase<LocalDateTime> withDateFormat(DateTimeFormatter formatter) {
 		return new LocalDateTimeDeserializer(formatter);
 	}
 

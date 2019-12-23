@@ -1,11 +1,10 @@
-package com.loserico.json.jackson.serializer;
+package com.loserico.json.jackson.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.JSR310DateTimeDeserializerBase;
-import com.loserico.json.utils.DateUtils;
+import com.loserico.common.lang.utils.DateUtils;
 
 import java.io.IOException;
 import java.time.DateTimeException;
@@ -42,10 +41,15 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
 	}
 
 	@Override
-	protected JsonDeserializer<LocalDate> withDateFormat(DateTimeFormatter dtf) {
+	protected JSR310DateTimeDeserializerBase<LocalDate> withDateFormat(DateTimeFormatter dtf) {
 		return new LocalDateDeserializer(dtf);
 	}
-
+	
+	@Override
+	protected JSR310DateTimeDeserializerBase<LocalDate> withLeniency(Boolean leniency) {
+		return null; //TODO
+	}
+	
 	@Override
 	public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 		if (parser.hasToken(JsonToken.VALUE_STRING)) {

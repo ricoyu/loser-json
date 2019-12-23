@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.loserico.json.utils.MathUtils;
+import com.loserico.common.lang.utils.MathUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
