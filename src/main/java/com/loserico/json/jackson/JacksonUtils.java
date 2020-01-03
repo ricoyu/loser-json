@@ -134,7 +134,27 @@ public final class JacksonUtils {
 		}
 		return map;
 	}
-
+	
+	/**
+	 * JSON字符串转MAP
+	 *
+	 * @param json
+	 * @return
+	 */
+	public static <K, V> Map<K, V> toGenericMap(String json) {
+		if (isBlank(json)) {
+			return emptyMap();
+		}
+		Map<K, V> map = new HashMap<>();
+		try {
+			map = objectMapper.readValue(json, new TypeReference<Map<K, V>>() {
+			});
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return map;
+	}
+	
 	public static <T> List<T> toList(String jsonArray, Class<T> clazz) {
 		if (isBlank(jsonArray)) {
 			return emptyList();
