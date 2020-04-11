@@ -62,11 +62,6 @@ public class LocalDateTimeDeserializer
 	}
 	
 	@Override
-	protected JSR310DateTimeDeserializerBase<LocalDateTime> withLeniency(Boolean leniency) {
-		return null; //TODO
-	}
-	
-	@Override
 	protected JSR310DateTimeDeserializerBase<LocalDateTime> withDateFormat(DateTimeFormatter formatter) {
 		return new LocalDateTimeDeserializer(formatter);
 	}

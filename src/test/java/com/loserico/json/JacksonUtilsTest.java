@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -46,5 +48,28 @@ public class JacksonUtilsTest {
 		
 		Map<Object, Object> genericMap = JacksonUtils.toGenericMap(jsonString);
 		System.out.println(genericMap.toString());
+	}
+	
+	@Test
+	public void testPojoMap() {
+		Map<String, Object> params = new HashMap<>();
+		params.put("fullname", "三少爷");
+		params.put("birthday", "2020-03-20");
+		Person person = JacksonUtils.mapToPojo(params, Person.class);
+		System.out.println(person);
+		//Assert.assertEquals("三少爷", person.getFullName());
+		Map<String, Object> resultMap = JacksonUtils.pojoToMap(person);
+		System.out.println(resultMap);
+		Assert.assertEquals("2020-03-20", resultMap.get("birthday"));
+	}
+	
+	@Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class Person{
+		
+		//private String fullName;
+		
+		private LocalDate birthday;
 	}
 }

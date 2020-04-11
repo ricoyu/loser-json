@@ -3,6 +3,8 @@ package com.loserico.json.jackson;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -51,6 +53,8 @@ public final class JacksonUtils {
 	private static final PropertyReader propertyReader = new PropertyReader("jackson");
 	private static Set<String> enumProperties = propertyReader.getStringAsSet("jackson.enum.propertes");
 	private static boolean epochBased = propertyReader.getBoolean("jackson.epoch.date", false);
+	private static boolean ignorePropertiesCase = propertyReader.getBoolean("jackson.propertes.ignore_case", false);
+	private static boolean failOnUnknownProperties = propertyReader.getBoolean("jackson.fail.on.unknown.properties", false);
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -81,6 +85,9 @@ public final class JacksonUtils {
 				.withGetterVisibility(JsonAutoDetect.Visibility.PUBLIC_ONLY)
 				.withSetterVisibility(JsonAutoDetect.Visibility.PUBLIC_ONLY)
 				.withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+		
+		objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, ignorePropertiesCase);
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, failOnUnknownProperties);
 	}
 
 	/**
@@ -114,6 +121,17 @@ public final class JacksonUtils {
 		}
 		return null;
 	}
+	
+	/**
+	 * Map转POJO
+	 * @param map
+	 * @param clazz
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> T mapToPojo(Map map, Class<T> clazz) {
+		return objectMapper.convertValue(map, clazz);
+	}
 
 	/**
 	 * JSON字符串转MAP
@@ -133,6 +151,16 @@ public final class JacksonUtils {
 			logger.error(e.getMessage(), e);
 		}
 		return map;
+	}
+	
+	/**
+	 * POJO转Map
+	 * @param pojo
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> Map<String, T> pojoToMap(Object pojo) {
+		return objectMapper.convertValue(pojo, new TypeReference<Map<String, T>>() {});
 	}
 	
 	/**

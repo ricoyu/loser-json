@@ -46,11 +46,6 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
 	}
 	
 	@Override
-	protected JSR310DateTimeDeserializerBase<LocalDate> withLeniency(Boolean leniency) {
-		return null; //TODO
-	}
-	
-	@Override
 	public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 		if (parser.hasToken(JsonToken.VALUE_STRING)) {
 			String string = parser.getText().trim();
