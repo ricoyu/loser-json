@@ -10,6 +10,7 @@ import com.loserico.json.jackson.deserializer.LocalDateTimeDeserializer;
 import com.loserico.json.jackson.serializer.LocalDateTimeSerializer;
 import org.springframework.beans.factory.FactoryBean;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -60,7 +61,14 @@ public class ObjectMapperFactoryBean implements FactoryBean<ObjectMapper> {
 		javaTimeModule.addSerializer(LocalTime.class, new com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer(ofPattern("HH:mm:ss")));
 		javaTimeModule.addDeserializer(LocalTime.class, new com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer(ofPattern("HH:mm:ss")));
 		objectMapper.registerModule(javaTimeModule);
-
+		
+		/*
+		 * java.util.Date 序列化格式
+		 */
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		objectMapper.setDateFormat(simpleDateFormat);
+		
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
 				.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
