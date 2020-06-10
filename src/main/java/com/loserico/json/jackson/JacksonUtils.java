@@ -1,30 +1,20 @@
 package com.loserico.json.jackson;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.loserico.json.resource.PropertyReader;
+import com.loserico.json.ObjectMapperDecorator;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -41,55 +31,18 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @version 1.0
  */
 public final class JacksonUtils {
-
+	
 	private static final Logger logger = LoggerFactory.getLogger(JacksonUtils.class);
 
-	/**
-	 * 这里可以自定义Jackson的一些行为, 默认读取的是classpath根目录下的jackson.properties文件
-	 * <p>
-	 * #序列化/反序列化优先采用毫秒数方式还是日期字符串形式, false表示采用日期字符串
-	 * jackson.epoch.date=false
-	 */
-	private static final PropertyReader propertyReader = new PropertyReader("jackson");
-	private static Set<String> enumProperties = propertyReader.getStringAsSet("jackson.enum.propertes");
-	private static boolean epochBased = propertyReader.getBoolean("jackson.epoch.date", false);
-	private static boolean ignorePropertiesCase = propertyReader.getBoolean("jackson.propertes.ignore_case", false);
-	private static boolean failOnUnknownProperties = propertyReader.getBoolean("jackson.fail.on.unknown.properties", false);
-
-	private static final ObjectMapper objectMapper = new ObjectMapper();
-
+	
+	private static ObjectMapper objectMapper = null;
+	
 	static {
-		JavaTimeModule javaTimeModule = new JavaTimeModule();
-
-		javaTimeModule.addSerializer(LocalDateTime.class,
-				new com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer(
-						ofPattern("yyyy-MM-dd HH:mm:ss")));
-		javaTimeModule.addDeserializer(LocalDateTime.class,
-				new com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer(
-						ofPattern("yyyy-MM-dd HH:mm:ss")));
-
-		javaTimeModule.addSerializer(LocalDate.class,
-				new com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer(ofPattern("yyyy-MM-dd")));
-		javaTimeModule.addDeserializer(LocalDate.class,
-				new com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer(ofPattern("yyyy-MM-dd")));
-
-		javaTimeModule.addSerializer(LocalTime.class,
-				new com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer(ofPattern("HH:mm:ss")));
-		javaTimeModule.addDeserializer(LocalTime.class,
-				new com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer(ofPattern("HH:mm:ss")));
-		objectMapper.registerModule(javaTimeModule);
-
-		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-		objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
-				.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-				.withGetterVisibility(JsonAutoDetect.Visibility.PUBLIC_ONLY)
-				.withSetterVisibility(JsonAutoDetect.Visibility.PUBLIC_ONLY)
-				.withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
-		
-		objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, ignorePropertiesCase);
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, failOnUnknownProperties);
+		ObjectMapperDecorator decorator = new ObjectMapperDecorator();
+		objectMapper = ObjectMapperFactory.createObjectMapperOrFromBeanFactory();
+		decorator.decorate(objectMapper);
 	}
-
+	
 	/**
 	 * 将json字符串转成指定对象
 	 *
@@ -101,7 +54,7 @@ public final class JacksonUtils {
 		if (isBlank(json)) {
 			return null;
 		}
-
+		
 		if (clazz.isAssignableFrom(String.class)) {
 			return (T) json;
 		}
@@ -112,7 +65,7 @@ public final class JacksonUtils {
 		}
 		return null;
 	}
-
+	
 	public static <T> T toObject(byte[] src, Class<T> clazz) {
 		try {
 			return objectMapper.readValue(src, clazz);
@@ -124,6 +77,7 @@ public final class JacksonUtils {
 	
 	/**
 	 * Map转POJO
+	 *
 	 * @param map
 	 * @param clazz
 	 * @param <T>
@@ -132,7 +86,7 @@ public final class JacksonUtils {
 	public static <T> T mapToPojo(Map map, Class<T> clazz) {
 		return objectMapper.convertValue(map, clazz);
 	}
-
+	
 	/**
 	 * JSON字符串转MAP
 	 *
@@ -155,12 +109,14 @@ public final class JacksonUtils {
 	
 	/**
 	 * POJO转Map
+	 *
 	 * @param pojo
 	 * @param <T>
 	 * @return
 	 */
 	public static <T> Map<String, T> pojoToMap(Object pojo) {
-		return objectMapper.convertValue(pojo, new TypeReference<Map<String, T>>() {});
+		return objectMapper.convertValue(pojo, new TypeReference<Map<String, T>>() {
+		});
 	}
 	
 	/**
@@ -196,7 +152,7 @@ public final class JacksonUtils {
 			return emptyList();
 		}
 	}
-
+	
 	/**
 	 * 将对象转成json串
 	 *
@@ -216,7 +172,7 @@ public final class JacksonUtils {
 		}
 		return json;
 	}
-
+	
 	public static byte[] toBytes(Object object) {
 		if (object == null) {
 			return null;
@@ -228,7 +184,7 @@ public final class JacksonUtils {
 		}
 		return new byte[0];
 	}
-
+	
 	public static <T> String toPrettyJson(T object) {
 		if (object == null) {
 			return null;
@@ -241,7 +197,7 @@ public final class JacksonUtils {
 		}
 		return json;
 	}
-
+	
 	public static void writeValue(Writer writer, Object value) {
 		try {
 			objectMapper.writeValue(writer, value);
@@ -250,8 +206,12 @@ public final class JacksonUtils {
 			throw new JSONException(e);
 		}
 	}
-
+	
 	public static ObjectMapper objectMapper() {
 		return objectMapper;
+	}
+	
+	public static void addMixIn(Class target, Class mixinSource) {
+		objectMapper.addMixIn(target, mixinSource);
 	}
 }

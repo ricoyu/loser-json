@@ -29,6 +29,7 @@ public class JacksonUtilsTest {
 	public void testDeserialLocalDateTime() {
 		String s = "2019-12-21 19:15:34";
 		String dateStr = JacksonUtils.toJson(new DateObj(LocalDateTime.of(2019, 12, 21, 19, 15, 34)));
+		System.out.println(dateStr);
 		DateObj dateObj = JacksonUtils.toObject(dateStr, DateObj.class);
 		Assert.assertEquals(dateObj.getDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), s);
 	}
