@@ -36,6 +36,10 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 
 /**
  * ObjectMapper装饰器
+ * 用法: 
+ * ObjectMapperDecorator decorator = new ObjectMapperDecorator();
+ * decorator.decorate(objectMapper);
+ * 
  * <p>
  * Copyright: (C), 2020/4/30 10:44
  * <p>
