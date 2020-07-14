@@ -17,13 +17,13 @@ import com.loserico.common.lang.utils.ReflectionUtils;
  */
 public class ObjectMapperFactory {
 
-	private static ObjectMapper objectMapper;
+	private static volatile ObjectMapper objectMapper;
 	
 	/**
 	 * 如果是Spring环境, 优先从Spring容器中取ObjectMapper, 如果没有, 则自己创建一个
 	 * @return ObjectMapper
 	 */
-	public static ObjectMapper createObjectMapperOrFromBeanFactory() {
+	public static ObjectMapper createOrFromBeanFactory() {
 		if (objectMapper == null) {
 			synchronized (ObjectMapperFactory.class) {
 				if (objectMapper == null) {

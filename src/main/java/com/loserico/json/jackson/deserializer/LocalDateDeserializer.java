@@ -43,6 +43,10 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
 	public LocalDateDeserializer(LocalDateDeserializer deserializer, Boolean leniency) {
 		super(deserializer, leniency);
 	}
+	
+	/*protected LocalDateDeserializer(LocalDateDeserializer base, JsonFormat.Shape shape) {
+		super(base, shape);
+	}*/
 
 	@Override
 	protected JSR310DateTimeDeserializerBase<LocalDate> withDateFormat(DateTimeFormatter dtf) {
@@ -53,6 +57,12 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
 	protected JSR310DateTimeDeserializerBase<LocalDate> withLeniency(Boolean leniency) {
 		return new LocalDateDeserializer(this, leniency);
 	}
+	
+	/*@Override
+	protected JSR310DateTimeDeserializerBase<LocalDate> withShape(JsonFormat.Shape shape) {
+		return new LocalDateDeserializer(this, shape);
+	}*/
+	
 	
 	@Override
 	public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException {

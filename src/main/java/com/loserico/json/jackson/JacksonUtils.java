@@ -34,12 +34,11 @@ public final class JacksonUtils {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JacksonUtils.class);
 
-	
 	private static ObjectMapper objectMapper = null;
 	
 	static {
 		ObjectMapperDecorator decorator = new ObjectMapperDecorator();
-		objectMapper = ObjectMapperFactory.createObjectMapperOrFromBeanFactory();
+		objectMapper = ObjectMapperFactory.createOrFromBeanFactory();
 		decorator.decorate(objectMapper);
 	}
 	

@@ -112,7 +112,12 @@ public class ObjectMapperDecorator {
 		
 		DateTimeFormatter epochMilisFormatter = epocMillisFormatter();
 		
-		
+		/*
+		 * 如果在Spring环境使用, 从Spring容器中拿到的objectMapper实例已经注册过javaTimeModule
+		 * 默认是不支持重复注册的, 即我们这里注册的会被忽略, 
+		 * 所以需要禁用IGNORE_DUPLICATE_MODULE_REGISTRATIONS, 该选项默认是开启的
+		 */
+		objectMapper.disable(MapperFeature.IGNORE_DUPLICATE_MODULE_REGISTRATIONS);
 		objectMapper.registerModule(javaTimeModule);
 		javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(epochMilisFormatter));
 		
