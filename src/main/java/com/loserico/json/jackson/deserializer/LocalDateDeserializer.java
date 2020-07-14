@@ -39,10 +39,19 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
 	public LocalDateDeserializer(DateTimeFormatter dtf) {
 		super(LocalDate.class, dtf);
 	}
+	
+	public LocalDateDeserializer(LocalDateDeserializer deserializer, Boolean leniency) {
+		super(deserializer, leniency);
+	}
 
 	@Override
 	protected JSR310DateTimeDeserializerBase<LocalDate> withDateFormat(DateTimeFormatter dtf) {
 		return new LocalDateDeserializer(dtf);
+	}
+	
+	@Override
+	protected JSR310DateTimeDeserializerBase<LocalDate> withLeniency(Boolean leniency) {
+		return new LocalDateDeserializer(this, leniency);
 	}
 	
 	@Override

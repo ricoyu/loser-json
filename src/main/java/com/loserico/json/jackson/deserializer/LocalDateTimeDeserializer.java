@@ -33,8 +33,7 @@ import static java.time.format.DateTimeFormatter.ofPattern;
  * @author Rico Yu  ricoyu520@gmail.com
  * @version 1.0
  */
-public class LocalDateTimeDeserializer
-		extends JSR310DateTimeDeserializerBase<LocalDateTime> {
+public class LocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalDateTime> {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger logger = LoggerFactory.getLogger(LocalDateTimeDeserializer.class);
@@ -65,7 +64,16 @@ public class LocalDateTimeDeserializer
 	protected JSR310DateTimeDeserializerBase<LocalDateTime> withDateFormat(DateTimeFormatter formatter) {
 		return new LocalDateTimeDeserializer(formatter);
 	}
-
+	
+	@Override
+	protected JSR310DateTimeDeserializerBase<LocalDateTime> withLeniency(Boolean leniency) {
+		return new LocalDateTimeDeserializer(this, leniency);
+	}
+	
+	protected LocalDateTimeDeserializer(LocalDateTimeDeserializer base, Boolean leniency) {
+		super(base, leniency);
+	}
+	
 	@Override
 	public LocalDateTime deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 		//数字类型的毫秒数形式：1520007540000
